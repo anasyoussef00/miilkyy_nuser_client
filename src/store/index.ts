@@ -1,8 +1,14 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex';
 
-export default createStore({
-  state: {
-  },
+import authentication from './modules/authentication';
+
+import Iauthentication from '@/store/interfaces/Iauthentication';
+
+export interface State {
+  authentication: Iauthentication 
+}
+
+export default createStore<State>({
   getters: {
   },
   mutations: {
@@ -10,5 +16,6 @@ export default createStore({
   actions: {
   },
   modules: {
+    authentication
   }
-})
+});
