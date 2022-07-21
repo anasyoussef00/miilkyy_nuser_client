@@ -19,29 +19,23 @@ const formData = reactive({
   birthdate: ''
 });
 
-const errors: Ref<Record<string, unknown>> = ref({});
-// const errorMessage: Ref<string> = ref('');
+const confirm_pass_error: Ref<string> = ref('');
+const confirm_pass: Ref<string> = ref('');
+
+const errors = ref({});
+const errorMessage = ref('');
 
 const handleRegister = () => {
   try {
     // const {data} = await Api.post('/auth/register', formData);
-    store.dispatch('authentication/REGISTER', formData);
-    Swal.fire({
-      title: "Nice!",
-      text: "Your account has been created successfully! :)",
-      icon: "success"
-    });
-    router.push('/');
+    if(confirm_pass.value.trim() !== formData.password.trim()) {
+      confirm_pass_error.value = 'Both passwords should match';
+    } else {
+      store.dispatch('authentication/REGISTER', formData);
+    }
   } catch(err: any) {
     errors.value = err.response.data.errors;
-    Swal.fire({
-      toast: true,
-      title: "Oops...!",
-      text: err.response.data.message,
-      icon: "error",
-      position: "bottom"
-    });
-    // console.error(err.response.data);
+    errorMessage.value = err.response.data.message;
   } 
 }
 </script>
@@ -62,9 +56,10 @@ const handleRegister = () => {
               <input v-model="formData.last_name" class="form-control" id="lname-field" name="lname-field" type="text" placeholder="e.g. Doe">
               <span class="text-danger" v-for="(error, index) in errors.last_name" :key="index">{{error}}</span>
             </div>
-            <div class="mb-3">
-              <label class="form-label" for="nusername-field">Nusername</label>
-              <input v-model="formData.nusername" class="form-control" id="nusername-field" name="nusername-field" type="text" placeholder="e.g. johndoe-182">
+            <label class="form-label" for="nusername-field">Nusername</label>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon">@</span>
+              <input v-model="formData.nusername" class="form-control" id="nusername-field" name="nusername-field" type="text" placeholder="e.g. johndoe-182" aria-describedby="basic-addon1">
               <span class="text-danger" v-for="(error, index) in errors.nusername" :key="index">{{error}}</span>
             </div>
             <div class="mb-3">
@@ -73,17 +68,14 @@ const handleRegister = () => {
               <span class="text-danger" v-for="(error, index) in errors.email" :key="index">{{error}}</span>
             </div>
             <div class="mb-3">
-              <label class="form-label" for="remail-field">Repeat email address</label>
-              <input class="form-control" id="remail-field" name="remail-field" type="email" placeholder="e.g. johndoe-182@example.com">
-            </div>
-            <div class="mb-3">
               <label class="form-label" for="password-field">Password</label>
               <input v-model="formData.password" class="form-control" id="password-field-field" name="password-field-field" type="password" placeholder="***************">
               <span class="text-danger" v-for="(error, index) in errors.password" :key="index">{{error}}</span>
             </div>
             <div class="mb-3">
               <label class="form-label" for="cpassword-field">Confirm password</label>
-              <input class="form-control" id="cpassword-field-field" name="cpassword-field-field" type="password" placeholder="***************">
+              <input v-model="confirm_pass" class="form-control" id="cpassword-field-field" name="cpassword-field-field" type="password" placeholder="***************">
+              <span class="text-danger">{{confirm_pass_error}}</span>
             </div>
             <div class="mb-3">
               <label class="form-label" for="bdate">Birthdate</label>

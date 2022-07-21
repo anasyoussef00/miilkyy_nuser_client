@@ -1,5 +1,10 @@
+<script lang="ts" setup>
+import NavBar from "@/components/NavBar.vue";
+</script>
+
 <template>
-  <main class="container">
+  <nav-bar/>
+  <main class="mx-5 min-vh-100">
     <router-view/>
   </main>
 </template>
